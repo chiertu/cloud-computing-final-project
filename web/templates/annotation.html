@@ -1,0 +1,46 @@
+<!--
+annotation_details.html - Display details about a user's annotation job
+Copyright (C) 2011-2018 Vas Vasiliadis <vas@uchicago.edu>
+University of Chicago
+-->
+{% extends "base.html" %}
+{% block title %}Annotation Details{% endblock %}
+{% block body %}
+  {% include "header.html" %}
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Annotation Details</h1>
+    </div>
+
+    <p>
+      <strong>Request ID:</strong> {{ job_details['job_id'] }}<br />
+      <strong>Request Time</strong>: {{ job_details['submit_time'] }}<br />
+      <strong>VCF Input File</strong>: <a href="{{ job_details['input_file_url'] }}">{{ job_details['input_file_name'] }}</a><br />
+      <strong>Status</strong>: {{ job_details['job_status'] }}
+      {% if job_details['job_status'] == "COMPLETED" %}
+      <br /><strong>Complete Time</strong>: {{ job_details['complete_time'] }}
+      <hr />
+      <strong>Annotated Results File</strong>: 
+
+      {% if 'result_file_url' in job_details %}
+        <a href="{{ job_details['result_file_url'] }}">download</a><br />
+
+      {% elif job_details['restore_msg'] %}
+        <p>file is being restored; please check back later</a><p /> 
+
+      {% else %}
+        <a href="{{ url_for('subscribe')}}">upgrade to Premium for download</a><br /> 
+
+      {% endif %}
+      
+      <strong>Annotation Log File</strong>: 
+      <a href="{{ url_for('annotation_log', id=job_details['job_id'])}}">view</a><br />
+      {% endif %}
+    </p>
+
+    <hr />
+    <a href="{{ url_for('annotations_list') }}">&larr; back to annotations list</a>
+
+  </div> <!-- container -->
+{% endblock %}

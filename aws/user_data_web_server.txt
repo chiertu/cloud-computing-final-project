@@ -1,0 +1,25 @@
+#!/bin/bash -ex
+
+#referring to: https://livefiredev.com/s3-bash-script-fast-large-file-downloads-multi-part-in-parallel/
+echo "Setting env variables"
+BUCKET=mpcs-students
+KEY=haoyiran/gas.zip
+HOME=/home/ubuntu
+
+
+echo "Downloding zip file"
+aws s3 cp s3://${BUCKET}/${KEY} ${HOME}
+
+# referring to: https://stackoverflow.com/questions/36406850/unzip-a-file-in-s3-using-ec2
+echo "Extracting zip file"
+unzip ${HOME}/gas.zip -d ${HOME}/gas
+
+echo "Changing file ownership"
+chown -R ubuntu:ubuntu ${HOME}/gas
+
+echo "Running web server script"
+sudo -u ubuntu ${HOME}/gas/web/run_gas.sh &
+
+### EOUserData
+
+
